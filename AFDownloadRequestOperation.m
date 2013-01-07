@@ -93,7 +93,8 @@ typedef void (^AFURLConnectionProgressiveOperationProgressBlock)(NSInteger bytes
     BOOL isResuming = NO;
     if (self.shouldResume) {
         unsigned long long downloadedBytes = [self fileSizeForPath:[self tempPath]];
-        if (downloadedBytes > 0) {
+        if (downloadedBytes > 1) {
+            downloadedBytes--;
             NSMutableURLRequest *mutableURLRequest = [self.request mutableCopy];
             NSString *requestRange = [NSString stringWithFormat:@"bytes=%llu-", downloadedBytes];
             [mutableURLRequest setValue:requestRange forHTTPHeaderField:@"Range"];
@@ -217,7 +218,7 @@ typedef void (^AFURLConnectionProgressiveOperationProgressBlock)(NSInteger bytes
             NSArray *bytes = [contentRange componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" -/"]];
             if ([bytes count] == 4) {
                 fileOffset = [bytes[1] longLongValue];
-                totalContentLength = [bytes[2] longLongValue]; // if this is *, it's converted to 0
+                totalContentLength = [bytes[3] longLongValue]; // if this is *, it's converted to 0
             }
         }
     }
